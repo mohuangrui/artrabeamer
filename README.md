@@ -7,7 +7,7 @@
 ```Tex
 \usepackage[CJK,biber,authoryear,tikz,table,xlink]{Style/artrabeamer}}
 ```
-* Many other functionalities: check the available optionsin "artrabeamer.tex" below the line
+* Many other functionalities: check the available options in "artrabeamer.tex" below the line
 ```Tex
 \usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}
 ```
@@ -18,7 +18,7 @@
 \tikzart[t=p,x=-7,y=3,w=4]"comments"{figname}}: position a picture named "figname" at location "(x,y)" with width "w=4" and comments below the picture.
 \tikzart[t=o,x=0,y=-0.8,s=0.8]{objects-such-as-tikz-diagrams}}: position objects at location "(x,y)" with scaling "s=0.8"
 \tikzart[t=v,x=9.5,y=-6.5,w=0.5]{Video/vortex_preserve_geo.mp4}[\includegraphics{cover_image}]}: position a video at location "(x,y)" with a cover image of width "w=0.5"
-\lolt{lowlight}}, \path{\hilt{highlight}}: make the item show in different color when in different state
+\lolt{lowlight}}, \hilt{highlight}: make the item show in different color when in different state
 ```
 
 # artrabeamer
@@ -41,5 +41,5 @@
 \tikzart[t=p,x=-7,y=3,w=4]"comments"{figname}}: 将一张名为“figname”的图片放置在位置（x，y）处，图片宽度为“w=4”，并在图片下方添加注释。
 \tikzart[t=o,x=0,y=-0.8,s=0.8]{objects-such-as-tikz-diagrams}}: 将对象定位在位置（x，y）处，缩放比例为“s=0.8”
 \tikzart[t=v,x=9.5,y=-6.5,w=0.5]{Video/vortex_preserve_geo.mp4}[\includegraphics{cover_image}]}: 将视频放置在位置（x，y）处，封面图像宽度为“w=0.5”
-\lolt{lowlight}}, \path{\hilt{highlight}}: 低亮/高亮文本
+\lolt{lowlight}}, \hilt{highlight}: 低亮/高亮文本
 ```
