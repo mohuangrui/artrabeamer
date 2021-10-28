@@ -1,0 +1,35 @@
+%---------------------------------------------------------------------------%
+\lecture{Research Presentation}{lec_present_result}
+%---------------------------------------------------------------------------%
+\section{\enorcn{Results}{结果}}
+%---------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{\enorcn{Position animation + Make Table}{放置视频 + 制表}}
+    \begin{center}
+        \includegraphics[trim=00mm 10mm 00mm 10mm,clip,width=0.4\textwidth]{vortex_preserve_demo}
+    \end{center}
+
+    \begin{center}
+        \footnotesize
+        \setlength{\tabcolsep}{3pt}
+        %\renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{lc>{\columncolor[gray]{0.8}}cc>{\columncolor[gray]{0.8}}cc>{\columncolor[gray]{0.8}}c}
+            \toprule
+            %\multicolumn{2}{c}{Item} \\
+            %\cline{1-2}
+            $m_x \times m_y$ & $L_1$ error & $L_1$ order & $L_{2}$ error & $L_{2}$ order & $L_{\infty}$ error & $L_{\infty}$ order\\
+            \midrule
+            $40\times20$ & $3.536\mathrm{e}{-2}$ & $-$ & $6.097\mathrm{e}{-2}$ & $-$ & $4.105\mathrm{e}{-1}$ & $-$\\
+            $80\times40$ & $9.113\mathrm{e}{-3}$ & $1.956$ & $2.497\mathrm{e}{-2}$ & $1.288$ & $1.997\mathrm{e}{-1}$ & $1.039$\\
+            $160\times80$ & $2.034\mathrm{e}{-3}$ & $2.163$ & $6.548\mathrm{e}{-3}$ & $1.931$ & $5.236\mathrm{e}{-2}$ & $1.931$\\
+            $320\times160$ & $5.114\mathrm{e}{-4}$ & $1.992$ & $1.640\mathrm{e}{-3}$ & $1.997$ & $1.278\mathrm{e}{-2}$ & $2.035$\\
+            $640\times320$ & $1.287\mathrm{e}{-4}$ & $1.990$ & $4.097\mathrm{e}{-4}$ & $2.001$ & $3.119\mathrm{e}{-3}$ & $2.034$\\
+            $1280\times640$ & $3.233\mathrm{e}{-5}$ & $1.993$ & $1.024\mathrm{e}{-4}$ & $2.000$ & $7.818\mathrm{e}{-4}$ & $1.996$\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \tikzart[t=v,x=9.5,y=-4.5,w=0.5]{Video/vortex_preserve_geo.mp4}[{\tiny$\color{gray}{\blacktriangleright}$}]% insert video
+
+    \tikzart[t=t,x=6.5,y=2.5,w=4][draw=none,font=\tiny]{\enorcn{To play the video, the compiled PDF should be moved out from the "Tmp" directory}{播放视频时，编译生成的PDF需要从"Tmp"文件夹移出来}}% position text in the form of full citation
+\end{frame}
+%---------------------------------------------------------------------------%

@@ -1,0 +1,784 @@
+%---------------------------------------------------------------------------%
+%-                                                                         -%
+%-                             Beamer Style                                -%
+%-                                                                         -%
+%---------------------------------------------------------------------------%
+%- Copyright (C) Huangrui Mo <huangrui.mo@gmail.com> 
+%- This is free software: you can redistribute it and/or modify it
+%- under the terms of the GNU General Public License as published by
+%- the Free Software Foundation, either version 3 of the License, or
+%- (at your option) any later version.
+%---------------------------------------------------------------------------%
+%->> Identification
+%---------------------------------------------------------------------------%
+\NeedsTeXFormat{LaTeX2e}%
+\ProvidesPackage{artrabeamer}[2014/10/01 v1.0 Beamer macros package]%
+%---------------------------------------------------------------------------%
+%->> Declare options
+%---------------------------------------------------------------------------%
+\RequirePackage{etex}% to handle errors from tikz, caption, ctables with beamer
+\RequirePackage{keyval,xparse}% support macros with optional arguments and keys
+\RequirePackage{xstring}% string manipulation
+%-
+%-> LaTeX engine <pdflatex>, <lualatex>, <xelatex>
+%-
+\newif\ifartx@pdftex \artx@pdftexfalse
+\newif\ifartx@luatex \artx@luatexfalse
+\newif\ifartx@xetex \artx@xetexfalse
+\RequirePackage{ifxetex,ifluatex}% LaTeX engine detection
+\ifxetex%
+    \artx@xetextrue
+    \RequirePackage{xeCJK}% support calling system fonts
+\else\ifluatex%
+    \artx@luatextrue
+\else%
+    \artx@pdftextrue
+\fi\fi%
+%-
+%-> Bibliography engine <bibtex>, <biber>
+%-
+\newif\ifartx@bibtex \artx@bibtextrue
+\newif\ifartx@biber \artx@biberfalse
+\DeclareOption{bibtex}{%
+    \artx@bibtextrue
+    \artx@biberfalse
+}
+\DeclareOption{biber}{%
+    \artx@bibtexfalse
+    \artx@bibertrue
+}
+%-
+%-> Citation and reference style
+%-
+\newif\ifartx@numbers \artx@numberstrue
+\newif\ifartx@super \artx@superfalse
+\newif\ifartx@authoryear \artx@authoryearfalse
+\newif\ifartx@alpha \artx@alphafalse
+\DeclareOption{numbers}{%
+    \artx@numberstrue
+    \artx@superfalse
+    \artx@authoryearfalse
+    \artx@alphafalse
+}
+\DeclareOption{super}{%
+    \artx@numberstrue
+    \artx@supertrue
+    \artx@authoryearfalse
+    \artx@alphafalse
+}
+\DeclareOption{authoryear}{%
+    \artx@numbersfalse
+    \artx@superfalse
+    \artx@authoryeartrue
+    \artx@alphafalse
+}
+\DeclareOption{alpha}{%
+    \artx@numbersfalse
+    \artx@superfalse
+    \artx@authoryearfalse
+    \artx@alphatrue
+}
+%-
+%-> Complex diagrams support
+%-
+\newif\ifartx@tikz \artx@tikzfalse
+\DeclareOption{tikz}{%
+    \artx@tikztrue
+}
+%-
+%-> Complex tables support
+%-
+\newif\ifartx@table \artx@tablefalse
+\DeclareOption{table}{%
+    \artx@tabletrue
+}
+%-
+%-> Enhanced list
+%-
+\newif\ifartx@list \artx@listfalse
+\DeclareOption{list}{%
+    \artx@listtrue
+}
+%-
+%-> Extra math support
+%-
+\newif\ifartx@math \artx@mathfalse
+\DeclareOption{math}{%
+    \artx@mathtrue
+}
+%-
+%-> Chinese environment support
+%-
+\newif\ifartx@CJK \artx@CJKfalse
+\DeclareOption{CJK}{%
+    \artx@CJKtrue%
+}
+%-
+%-> Note page
+%-
+\newif\ifartx@shownote \artx@shownotefalse
+\newif\ifartx@showonlynote \artx@showonlynotefalse
+\DeclareOption{showonlynote}{% show note pages only
+    \artx@shownotetrue
+    \artx@showonlynotetrue
+}
+\newif\ifartx@showsecnote \artx@showsecnotefalse
+\DeclareOption{showsecnote}{% show note pages on second screen
+    \artx@shownotetrue
+    \artx@showsecnotetrue
+}
+%-
+%-> Handout output
+%-
+\newif\ifartx@handout \artx@handoutfalse
+\DeclareOption{handout}{%
+    \artx@handouttrue%
+}
+%-
+%-> Link color
+%-
+\newif\ifartx@xlink \artx@xlinkfalse
+\DeclareOption{xlink}{%
+    \artx@xlinktrue
+}
+%-
+%-> Handle non-implemented options
+%-
+\DeclareOption*{%
+    \PackageWarning{artrabeamer}{Unknown option '\CurrentOption'}%
+}
+%-
+%-> Terminates all options processing
+%-
+\ProcessOptions\relax%
+%---------------------------------------------------------------------------%
+%->> Package macros
+%---------------------------------------------------------------------------%
+%-
+%-> Highlight
+%-
+%- Make the item show in different color when in different state,
+\providecommand{\hilt}[1][2]{\temporal<#1>{\color{black}}{\bfseries\color{blue}}{\color{black}}}%
+\providecommand{\lolt}[1][2]{\temporal<#1>{\color{black}}{\color{gray}}{\color{gray}}}%
+%-
+%-> Language switch
+%-
+\ifartx@CJK
+    \providecommand{\enorcn}[2]{#2}% chinese
+\else
+    \providecommand{\enorcn}[2]{#1}% english
+\fi
+%---------------------------------------------------------------------------%
+%->> Required packages
+%---------------------------------------------------------------------------%
+%-
+%-> Math packages
+%-
+\RequirePackage{amsmath,amsthm,amssymb}% math structures, theorems, and extended symbols
+\ifartx@math% extra math packages
+    \RequirePackage{mathtools}% extension to amsmath
+\fi
+\everymath{\displaystyle}% force all inline math to look the same as math in equations
+%-
+%-> Language settings
+%-
+\ifartx@pdftex% <pdflatex> call font packages
+    \RequirePackage[utf8]{inputenc}% set input encoding, document must use utf-8 encoding
+    \RequirePackage[T1]{fontenc}% set font encoding to enable modern font encoding
+    %- Text font: English <default: computer modern|others: font packages>
+    \RequirePackage{palatino}% main font, <times font: newtxtext|others: palatino>
+    %- Math font: <default: computer modern|others: font packages>
+    %\RequirePackage[cmintegrals]{newtxmath}% times font, load after amsmath and newtxtext packages
+    \RequirePackage{mathrsfs}% enable \mathscr for script alphabet
+    \RequirePackage[cal=cm]{mathalfa}% map styles for calligraphic \mathcal and script \mathscr alphabet
+    %- Text font: Chinese
+    \ifartx@CJK
+        \RequirePackage{CJKutf8}% Chinese environment support
+        \AtBeginDocument{\begin{CJK*}{UTF8}{gkai}\CJKtilde}%
+        \AtEndDocument{\clearpage\end{CJK*}}%
+    \fi
+\else% <xelatex> or <lualatex> call system fonts
+    \RequirePackage{fontspec}% support calling system fonts
+    %- Font properties: <family:rm|sf|tt> + <weight:lf|md|bf> + <shape:up|it|sl|sc> + <size>
+    %- <\rmfamily,\textrm{}|\sffamily,\textsf{}|\ttfamily,\texttt{}>: family of font <Roman|Sans serif|Monospace>, default <\rmfamily>
+    %- <\lfseries,\textlf{}|\mdseries,\textmd{}|\bfseries,\textbf{}>: weight of font <light|medium|bold>, default <\mdseries>
+    %- <\upshape,\textup{}|\itshape,\textit{}|\scshape,\textsc{}|\slshape,\textsl{}>: shape of font <upright|italic|samll capital|slanted>, default <\upshape>
+    %- Specify the default TeX font families with properties: <main>, <sans>, <mono>
+    %- \setxxxxfont{<font>}[Path=<>,Extension=<>,UprightFont=<>,BoldFont=<>,ItalicFont=<>,BoldItalicFont=<>,SlantedFont=<>,BoldSlantedFont=<>,SmallCapsFont=<>]%
+    %- The default setup for font loading automatically adds the Ligatures=TeX feature for the \setmainfont and \setsansfont commands
+    %- Fonts known to LuaTEX or XETEX may be loaded by their standard names as you'd speak them out loud
+    %- Fonts in the search path can be loaded by file name instead, but must include bold and italic variants explicitly
+    %- When a font family has both slanted and italic shapes, these may be specified separately using the analogous features ItalicFont and SlantedFont
+    %- Without these, the font switches for slanted (\textsl{},\slshape) will default to the italic shape
+    %- Roman or Serif - typefaces with strokes - for main content
+    %- examples: Times New Roman, Adobe Garamond Pro
+    %\setmainfont{Adobe Garamond Pro}%
+    %- extra font switches: {\normalfont ...}, \textnormal{...} due to \renewcommand*{\familydefault}{\rmdefault}
+    %- Sans serif - typefaces without strokes - for headings demanding high readability
+    %- examples: Arial, Helvetica, Gill Sans MT, Futura
+    %\setsansfont{Gill Sans MT}%
+    %- Monospaced - typefaces with same width - for programming, etc
+    %- examples: Rockwell, Andale Mono, Courier
+    %\setmonofont{Rockwell}%
+    %- Specify user-defined font families and font switches (like \rmfamily, \sffamily, \ttfamily)
+    %- without NFSSFamily option, a font family is defined only if adding a new font name
+    %\newfontfamily\<font-switch>{<font>}[<font features>]%
+    %\newcommand{\text<font-switch>}[1]{{\<font-switch> #1}}%
+    %- Text font: English <default: computer modern|fontspec: system fonts|others: font packages>
+    %\setmainfont[NFSSFamily=entextrm]{Adobe Garamond Pro}%
+    \setmainfont[NFSSFamily=entextrm]{Gill Sans MT}% presentation specific
+    \setsansfont[NFSSFamily=entextsf]{Gill Sans MT}%
+    \setmonofont[NFSSFamily=entexttt]{Rockwell}%
+    %\RequirePackage{newtxtext}% main font
+    %- Math font: <default: computer modern|others: font packages <newtxmath|unicode-math>>
+    %\RequirePackage[cmintegrals]{newtxmath}% times font, load after amsmath and newtxtext packages
+    \RequirePackage{mathrsfs}% enable \mathscr for script alphabet
+    \RequirePackage[cal=cm]{mathalfa}% map styles for calligraphic \mathcal and script \mathscr alphabet
+    %- Text font: Chinese
+    \ifartx@CJK%
+        %\setCJKmainfont{Songti SC}[%
+        \setCJKmainfont{Heiti SC}[% presentation specific
+            NFSSFamily=cntextrm,
+            UprightFont    = * Light,
+            BoldFont       = * Bold,
+            ItalicFont     = Kaiti SC,
+            BoldItalicFont = Kaiti SC Bold,
+        ]
+        \setCJKsansfont{Heiti SC}[%
+            NFSSFamily=cntextsf,
+            BoldFont = * Medium,
+        ]%
+        \setCJKmonofont{STFangsong}[%
+            NFSSFamily=cntexttt,
+        ]
+    \fi
+\fi
+%-
+%-> Bibliography processor and package
+%-
+%- Bibtex processor + natbib package
+\ifartx@bibtex%
+    % Set punctuation and mode of citation style
+    \newcommand{\bibstyle@super}{\bibpunct{[}{]}{,}{s}{,}{\textsuperscript{,}}}%
+    \newcommand{\bibstyle@numbers}{\bibpunct{[}{]}{,}{n}{,}{,}}%
+    \newcommand{\bibstyle@authoryear}{\bibpunct{(}{)}{;}{a}{,}{,}}%
+    \newcommand{\bibstyle@alpha}{\bibpunct{[}{]}{,}{n}{,}{,}}%
+    \ifartx@numbers% enable numbered citation style
+        \RequirePackage[sort&compress]{natbib}% numbered citation mode
+        \ifartx@super% enable superscripted citation style
+            \citestyle{super}%
+        \else
+            \citestyle{numbers}%
+        \fi
+        \bibliographystyle{elsarticle-num-names}% numbered scheme
+    \fi
+    \ifartx@authoryear% enable author year citation style
+        \RequirePackage{natbib}% author year citation mode
+        \citestyle{authoryear}%
+        \bibliographystyle{elsarticle-harv}% author year scheme
+    \fi
+    \ifartx@alpha% enable alpha citation style
+        \RequirePackage[square,comma,numbers]{natbib}% alpha citation mode
+        \bibliographystyle{alpha}% alpha scheme
+    \fi
+    \providecommand*{\citetns}[2][]{% text embedded \citet in superscripted mode
+        \begingroup\citestyle{numbers}\citet[#1]{#2}\endgroup%
+    }
+    \providecommand*{\citepns}[2][]{% text embedded \citep in superscripted mode
+        \begingroup\citestyle{numbers}\citep[#1]{#2}\endgroup%
+    }
+\fi
+%- Biber processor + biblatex package
+\ifartx@biber%
+    \ifartx@numbers% enable numbered citation style
+        \ifartx@super% enable superscripted citation style
+            \RequirePackage[style=numeric-comp,maxbibnames=3,maxcitenames=1,uniquelist=false,giveninits=true]{biblatex}%
+        \else
+            \RequirePackage[style=numeric-comp,maxbibnames=3,maxcitenames=1,uniquelist=false,giveninits=true]{biblatex}%
+        \fi
+    \fi
+    \ifartx@authoryear% enable author year citation style
+        \RequirePackage[style=authoryear-comp,maxbibnames=3,maxcitenames=1,uniquelist=false,giveninits=true]{biblatex}%
+    \fi
+    \ifartx@alpha% enable alpha citation style
+        \RequirePackage[style=alphabetic,maxbibnames=3,maxcitenames=1,uniquelist=false,giveninits=true]{biblatex}%
+    \fi
+    %\AtEveryCitekey{% suppress certain fields only in citations, may cause indentation problems
+    %    \clearfield{edition}
+    %}
+    \addbibresource{ref.bib}%
+    \providecommand{\citep}[1]{\parencite{#1}}% compatibility
+    \providecommand{\citet}[1]{\textcite{#1}}% compatibility
+\fi
+%-
+%-> Page layout and spacing
+%-
+%\RequirePackage{microtype}% improves general appearance of the text
+\RequirePackage{appendixnumberbeamer}% correct page number for backup slides
+%-
+%-> Draw graphics directly with TeX commands
+%-
+\ifartx@tikz%
+    \RequirePackage{tikz}% automatically load pgf package
+    \usetikzlibrary{% load libraries
+        positioning,
+        arrows,
+        backgrounds,
+        fit,
+        calc,
+        fadings,
+        shadows,
+        mindmap,
+        calendar,
+        decorations.pathreplacing,
+        decorations.pathmorphing,
+        decorations.markings,
+        shapes,
+        trees
+    }%
+    \RequirePackage{smartdiagram}% easily draw diagrams from a list of items
+    \usesmartdiagramlibrary{additions}% enable annotations over a smart diagram
+    %\RequirePackage{tkz-euclide}% easily draw coordinate systems
+\fi
+%-
+%-> Complex tables
+%-
+\ifartx@table%
+    \RequirePackage{colortbl,dcolumn}% add color and align decimal point
+    \RequirePackage{ctable}% imports the array, tabularx and booktabs packages
+\fi
+%-
+%-> List structures
+%-
+\ifartx@list% enable enhanced list and verbatim structures
+    \RequirePackage{verbatim}% improve verbatim environment
+    %\RequirePackage{enumitem}% configure the enumerate environment [not work with beamer]
+    %\setlist[enumerate]{wide=\parindent}% only indent the first line
+    %\setlist[itemize]{wide=\parindent}% only indent the first line
+    %\setlist{nosep}% default text spacing
+    \RequirePackage{listings}% source code
+    \RequirePackage{algpseudocode,algorithm,algorithmicx}% algorithm
+    \providecommand{\algname}{Algorithm}%
+    \def\ALG@name{\algname}% rename label
+\fi
+%-
+%-> Multimedia
+%-
+%- Piece-wise uncovering of elements in TikZ pictures:
+%- Invisible effect is obtained via setting opacity=0 to hide the element,
+%- which has the advantage over beamer overlay that the element is always drawn,
+%- consuming a fixed space to avoid jumping and provide positioning coordinate.
+%- The invisibility can be overridden by altering the opacity value to obtain
+%- dimming effects. Alternatively, the color might be set to white, if the
+%- output driver does not support transparencies.
+\tikzset{% create global tikz styles 
+    %- invisible key to process other keys conditionally on the slide number
+    invis/.style={opacity=0,text opacity=0},
+    vis on/.style={alt={#1{}{invis}}},
+    alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+    %- path edge style
+    to/.style={->,shorten >=1pt,>=stealth',semithick,gray},
+    ot/.style={<-,shorten <=1pt,>=stealth',semithick,gray},
+    oto/.style={<->,shorten <=1pt,shorten >=1pt,>=stealth',semithick,gray},
+    %- flow chart style
+    sa/.style={draw,thick,cylinder,shape border rotate=90,aspect=0.25,fill=gray!20,inner sep=4pt},
+    sb/.style={draw,thick,semicircle,fill=gray!20,inner sep=4pt},
+    sc/.style={draw,thick,circle,fill=gray!20,inner sep=4pt},
+    sd/.style={draw,thick,diamond,fill=gray!20,inner sep=4pt},
+    se/.style={draw,thick,ellipse,fill=gray!20,inner sep=4pt},
+    sf/.style={draw,cloud,cloud puffs=22,cloud ignores aspect,fill=gray!20,inner sep=4pt},
+    sm/.style={draw,thick,magnifying glass,fill=gray!20,inner sep=4pt},
+    so/.style={draw,thick,ellipse callout,callout relative pointer={(1,1)},fill=gray!20,inner sep=4pt},
+    sp/.style={draw,thick,regular polygon,regular polygon sides=9,fill=gray!20,inner sep=4pt},
+    sr/.style={draw,thick,rectangle,rounded corners,fill=gray!20,inner sep=4pt},
+    ss/.style={draw,thick,star,star points=7,star point ratio=0.8,fill=gray!20,inner sep=4pt},
+    st/.style={draw,thick,trapezium,trapezium left angle=70,trapezium right angle=-70,fill=gray!20,inner sep=4pt},
+    su/.style={draw,thick,starburst,fill=gray!20,inner sep=4pt},
+    sv/.style={draw,thick,tape,fill=gray!20,inner sep=4pt},
+    sx/.style={draw,thick,rectangle split,rectangle split parts=3,fill=gray!20,inner sep=4pt},%\node[sx]{text \nodepart{two} text \nodepart{threee} text};
+    sy/.style={draw,thick,ellipse split,fill=gray!20,inner sep=4pt},%\node[sy]{text \nodepart{lower} text};
+}
+%- Usage:
+%- \tikz[vis on=<2->, style options]{}
+%- \node[vis on=<2->, style options] (node label) at (coordinate x,y) {node content};
+%- \node[vis on=<{2,4}>, style options] (node label) at (coordinate x,y) {node content};
+%- \draw[style options] (node label i/coordinate x_i,y_i) [path shape for i-j] (node label j/coordinate x_j,y_j);
+%- \draw = \path[draw], \clip = \path[clip], \draw[clip] = \path[draw,clip]
+%- TikZ workflow: i) \node to mark position and place content; ii) \path to connect
+%- marked positions, i.e., nodes. When placing objects, alignment is key, and the
+%- procedure is: i) set the internal baseline of the object, which is the internal
+%- reference point; ii) place the internal baseline of the object on the external
+%- global baseline. Baseline and anchor pos can effectively aid the alignment of
+%- objects when placing a tikz picture/node/path.
+%- \tikz[baseline=(coordinate) such as (current bounding box.anchor pos), (node label.anchor pos)]:
+%- set the internal baseline of the current tikz at the y-coordinate of the given
+%- (coordinate), default: south anchor of tikz.
+%- \node[anchor=(anchor pos)]: set the internal baseline of the current node at anchor pos.
+%- Anchor pos of a node/bounding box: <center|east/south/west/north|south east/west|
+%- north east/west|base|base east/south/west/north>
+%- \node[<above|below|right|left|above/below left/right|above/below/right/left=<offset>|...>]: alias to change internal baseline of a node relative to a target object
+%- \node[<align=center/left/right/justify/...> alignment for node content within a text width]
+%- [<x|y|z>={(coordinate)}]: set <x|y|z> base vector <ex|ey|ez> of tikz xyz-coordinate system as vector (coordinate).
+%- Whenever specify a coordinate (a,b,c), it means r = a*ex + b*ey + c*ez.
+%- Note that only coordinate rather than dimensions are affected by the change of
+%- base vectors of the tikz xyz-coordinate system.
+%- step=<number or dimension or coordinate>: sets the stepping in both the x and
+%- y-direction; if a dimension is provided, this is used directly; if a number is
+%- provided, this number is interpreted in the xyz-coordinate system, for example,
+%- number 2 means the x-step=2*ex and y-step=2*ey; if a coordinate is provided,
+%- then <x|y>-step = <x|y>-part of this coordinate.
+%- [shift={(coordinate)}]: add the (coordinate) to all coordinates.
+%- One needs to add the overlay option to tikz paths or to whole tikz pictures that
+%- contain references to nodes in different tikz pictures, which switches the
+%- computation of the bounding box off. The effect of this option is that everything
+%- within the current scope is not taken into consideration when the bounding box of
+%- the current picture is computed. The reason is that, otherwise, TikZ will attempt
+%- to make the current picture large enough to encompass the node in the other picture.
+%- However, on a second run of TEX this will create an even bigger picture, leading to
+%- larger and larger pictures.
+%- Draw a marked node
+\NewDocumentCommand{\tikzmark}{ O{} D(){none} +m }{% [node style](label){object}
+    \tikz[remember picture,baseline=(#2.base)]{% mark position
+        \node[#1] (#2) {#3};%
+    }%
+}
+%- Draw a highlight region connecting two marked nodes
+\NewDocumentCommand{\tikzhilt}{ O{} D(){none} +m +m }{% [node style](label){object}{object}
+    \tikz[remember picture,overlay]{% highlight the region connecting marked positions
+        \node[rectangle,rounded corners,fill=red!15,draw,fill opacity=0.5,thick,inner sep=0pt,fit=(#3.north west) (#4.south east),#1] (#2) {};%
+    }%
+}
+%- Draw aligned nodes
+\NewDocumentCommand{\tikzdraw}{ O{} D(){none} +m }{% [node style](label){object}
+    \tikz[remember picture,baseline]{% draw aligned nodes by adjusting the baseline of the nodes
+        \node[rectangle,rounded corners,fill=blue!20,anchor=base,#1] (#2) {#3};%
+    }%
+}
+%- Draw a annotation node relative to a labeled target node
+\NewDocumentCommand{\tikznot}{ O{} D(){none} D<>{anchornode} +m }{% [node style](label)<anchor>{object}
+    \tikz[remember picture,overlay]{% use [xy]shift, [above/below/left/right=<offset>], rotate=val, scale=val to further adjust position
+        \node[anchor=center,draw=gray,thick,fill=white,rectangle,rounded corners,opacity=1.0,font=\bf\footnotesize,#1] (#2) at (#3) {#4};
+    }%
+}
+%- Draw an invisible box to occupy place
+\NewDocumentCommand{\tikzbox}{ O{} D(){none} O{10} O{1} }{% [node style](label)[width][height]
+    \tikz[remember picture]{% draw an invisible box to occupy place
+        \node[anchor=center,text width=#3\grid,text height=#4\grid,draw=none,fill=none,inner sep=0pt,#1] (#2) {};%
+    }%
+}
+%- Draw invisible vertical space to occupy place
+\NewDocumentCommand{\tikzvsp}{ m }{% {height}
+    \vspace*{#1\grid}% draw invisible vertical space to occupy place
+}
+%- Draw invisible horizontal space to occupy place
+\NewDocumentCommand{\tikzhsp}{ m }{% {width}
+    \hspace*{#1\grid}% draw invisible horizontal space to occupy place
+}
+%- Define grid length scales
+\newlength{\grid}% grid width variable
+\setlength{\grid}{0.05\paperwidth}% grid width length
+%- Key definitions: \define@key{key family}{key name}[default key value]{function}
+\define@key{artxtikzkey}{t}[t]{\def\artxtikzkey@t{#1}}% type: object, text, picture, movie
+\define@key{artxtikzkey}{x}[0]{\def\artxtikzkey@x{#1}}% x pos
+\define@key{artxtikzkey}{y}[0]{\def\artxtikzkey@y{#1}}% y pos
+\define@key{artxtikzkey}{w}[5]{\def\artxtikzkey@w{#1}}% width
+\define@key{artxtikzkey}{s}[1]{\def\artxtikzkey@s{#1}}% scale
+%- Draw tikz art node
+\NewDocumentCommand{\tikzart}{ o d<> O{} D(){none} +d"" +m O{} }{% [keyval]<hyperlink>[node style](label)"poster text for image/post image for video"{object/text/picture/video/mesh/cover}[graphic option for image/post text for video]
+    %\begingroup% localize changes to the key
+    % key default and new values: \setkeys{key family}{key={value},...}
+    \setkeys{artxtikzkey}{t={m},x={0},y={0},w={5},s={1}}% default values
+    \IfValueTF{#1}{% if argument specified
+        \setkeys{artxtikzkey}{#1}% new values
+    }{}%
+    % macro function
+    \IfStrEq{\artxtikzkey@t}{o}{% insert object
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[anchor=center,xshift=\artxtikzkey@x\grid,yshift=\artxtikzkey@y\grid,align=center,#3] (#4) at (current page.center) {%
+                \scalebox{\artxtikzkey@s}{% scalebox is more stable than resizebox here
+                    #6%
+                }
+            };
+        \end{tikzpicture}
+    }{}%
+    \IfStrEq{\artxtikzkey@t}{t}{% insert text
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[anchor=center,xshift=\artxtikzkey@x\grid,yshift=\artxtikzkey@y\grid,text width=\artxtikzkey@w\grid,draw=gray,thick,fill=none,rectangle,rounded corners,#3] (#4) at (current page.center) {%
+                \IfValueTF{#2}{% if argument specified
+                    \hyperlink{#2}{#6}%
+                }{%
+                    #6%
+                }%
+            };
+        \end{tikzpicture}
+    }{}%
+    \IfStrEq{\artxtikzkey@t}{p}{% insert picture
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[anchor=center,xshift=\artxtikzkey@x\grid,yshift=\artxtikzkey@y\grid,text width=\artxtikzkey@w\grid,align=center,inner sep=0pt,#3] (#4) at (current page.center) {%
+                \IfValueTF{#2}{% if argument specified
+                    \hyperlink{#2}{\includegraphics[width=\textwidth,#7]{#6}}%
+                }{%
+                    \includegraphics[width=\textwidth,#7]{#6}%
+                }%
+            };
+            \IfValueTF{#5}{% if argument specified
+                \IfValueTF{#2}{% if argument specified
+                    \node[font=\footnotesize,align=center,text width=\artxtikzkey@w\grid,below] at (#4.south) {\hyperlink{#2}{#5}};
+                }{%
+                    \node[font=\footnotesize,align=center,text width=\artxtikzkey@w\grid,below] at (#4.south) {#5};
+                }%
+            }{}%
+        \end{tikzpicture}
+    }{}%
+    \IfStrEq{\artxtikzkey@t}{c}{% insert cover picture
+        \setbeamertemplate{background canvas}{\tikz{\node[align=center,inner sep=0pt,opacity=0.9,#3] {\includegraphics[width=\paperwidth,height=\paperheight,#7]{#6}};}}
+    }{}%
+    \IfStrEq{\artxtikzkey@t}{v}{% insert video
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[anchor=center,xshift=\artxtikzkey@x\grid,yshift=\artxtikzkey@y\grid,text width=\artxtikzkey@w\grid,align=center,inner sep=0pt,opacity=0.8,draw=gray,thick,fill=none,circle,#3,path picture={% place object in a node inside the path picture scope to make the current path clip on the object
+                \node[xshift=0,yshift=0] at (path picture bounding box.center) {% can adjust the coordinates of the node to move the object around
+                    \ifartx@xetex%
+                        \includemedia[
+                            addresource=#6,% video files
+                            transparent,% transparent background
+                            %activate=pageopen,
+                            width=\artxtikzkey@y\grid,height=\artxtikzkey@w\grid,
+                            flashvars={
+                                source=#6
+                                &scaleMode=letterbox% preserve aspect ratio while scaling the video
+                            }
+                        ]{}{VPlayer.swf}%
+                    \else% <pdflatex> or <lualatex>
+                        \IfValueTF{#5}{% if argument specified
+                            \movie[externalviewer]{\includegraphics[width=\textwidth,#7]{#5}}{#6}%
+                            %\movie[width=\textwidth,height=\textheight,poster,showcontrols]{}{#6}%
+                        }{%
+                            \movie[externalviewer]{#7}{#6}%
+                            %\movie[width=\textwidth,height=\textheight,poster,showcontrols]{}{#6}%
+                        }%
+                    \fi
+                };}] (#4) at (current page.center) {};
+        \end{tikzpicture}
+    }{}%
+    \IfStrEq{\artxtikzkey@t}{m}{% insert mesh
+        \begin{tikzpicture}[remember picture,overlay]
+            % draw vertical lines
+            \foreach \i in {-10,-9,...,10} {\node[anchor=center,xshift=\i\grid,yshift=-7\grid,align=center] (xn\i) at (current page.center) {};}% mark pos by node
+            \foreach \i in {-10,-9,...,10} {\node[anchor=center,xshift=\i\grid,yshift=7\grid,align=center] (xp\i) at (current page.center) {};}% mark pos by node
+            \foreach \i in {-10,-9,...,10} {\draw[dashed] (xn\i) -- (xp\i);}% path from node (xn_i) to node (xp_i)
+            % draw horizontal lines
+            \foreach \i in {-7,-6,...,7} {\node[anchor=center,xshift=-10\grid,yshift=\i\grid,align=center] (yn\i) at (current page.center) {};}% mark pos by node
+            \foreach \i in {-7,-6,...,7} {\node[anchor=center,xshift=10\grid,yshift=\i\grid,align=center] (yp\i) at (current page.center) {};}% mark pos by node
+            \foreach \i in {-7,-6,...,7} {\draw[dashed] (yn\i) -- (yp\i);}% path from node (yn_i) to node (yp_i)
+            % draw main lines
+            %\draw (current page.south west) -- (current page.north east);
+            %\draw (current page.north west) -- (current page.south east);
+            \draw[red,->] (current page.south) to (current page.north);
+            \draw[red,->] (current page.west) to (current page.east);
+            % draw labels
+            \foreach \i in {-10,-9,...,10} {\node[anchor=center,xshift=\i\grid,yshift=0\grid,align=center,blue,font=\bfseries] at (current page.center) {\i};}% x labels
+            \foreach \i in {-7,-6,...,7} {\node[anchor=center,xshift=0\grid,yshift=\i\grid,align=center,blue,font=\bfseries] at (current page.center) {\i};}% y labels
+        \end{tikzpicture}
+    }{}%
+    %\endgroup%
+}
+\ifartx@xetex%
+    \RequirePackage{media9}% multimedia inclusion package with Adobe Reader9/X compatibility.
+    \RequirePackage{pgfpages}% inportant for supporting tikz, notes on multiscreen, handout, etc.
+    \renewcommand\pgfsetupphysicalpagesizes{% fix two screen notes does not work in xetex
+        \pdfpagewidth\pgfphysicalwidth\pdfpageheight\pgfphysicalheight%
+    }
+\else% <pdflatex> or <lualatex>
+    \RequirePackage{multimedia}% multimedia inclusion package.
+    \RequirePackage{pgfpages}% inportant for supporting tikz, notes on multiscreen, handout, etc.
+\fi
+%-
+%-> Handout output
+%-
+\ifartx@handout% enable handout output
+    \RequirePackage{pgfpages}% inportant for supporting tikz, notes on multiscreen, handout, etc.
+    \mode<handout>{\setbeamercolor{background canvas}{bg=black!5}}%
+    \pgfpagesuselayout{2 on 1}[a4paper,border shrink=5mm]% {4 0n 1}{a4paper,border shrink=5mm,landscape}
+\fi
+%-
+%-> Link support
+%-
+\AtEndPreamble{%
+    \RequirePackage{hyperref}% load at last
+    \hypersetup{% set hyperlinks
+        pdfencoding=auto,% allows non-Latin based languages in bookmarks
+        %bookmarks=true,% show bookmarks bar
+        bookmarksnumbered=true,% put section numbers in bookmarks
+        %pdftitle={\@title},% title
+        %pdfauthor={\@author},% author
+        %pdfsubject={\@title},% subject
+        %pdftoolbar=true,% show toolbar
+        %pdfmenubar=true,% show menu
+        pdffitwindow=false,% window fit to page when opened
+        pdfstartview={FitH},% fits the width of the page to the window
+        %pdfnewwindow=true,% links in new window
+        %backref=true,% do bibliographical back references
+        %pagebackref=true,% backreference by page number
+        colorlinks=true,% false: boxed links; true: colored links
+        linkcolor=black,% color of internal links
+        citecolor=blue,% color of links to bibliography
+        filecolor=blue,% color of file links
+        urlcolor=blue,% color of external links
+    }
+    \ifartx@xlink% set link color to black
+        \hypersetup{% set hyperlinks
+            hidelinks,% remove link color and border
+        }
+    \fi
+}
+%---------------------------------------------------------------------------%
+%->> Configuration command
+%---------------------------------------------------------------------------%
+%-
+%-> New environments
+%-
+%- enumerate with reduced space
+\newenvironment{enumerate*}
+{\vspace{-\topsep}\begin{enumerate}\setlength{\parskip}{0pt}\setlength{\itemsep}{0pt plus 1pt}}
+{\end{enumerate}\medskip}
+%- itemize with reduced space
+\newenvironment{itemize*}
+{\vspace{-\topsep}\begin{itemize}\setlength{\parskip}{0pt}\setlength{\itemsep}{0pt plus 1pt}}
+{\end{itemize}\medskip}
+%-
+%-> Extensions and directories for graphics
+%-
+%- Declare graphic extensions for automatic selection when including graphics
+%- via avoiding supplying graphic extensions in \includegraphics command,
+%- the source file can be more general and adaptive
+\ifartx@xetex%
+    \DeclareGraphicsExtensions{.pdf,.png,.jpg,.eps,.tif,.bmp,.gif}%
+\else% <pdflatex> or <lualatex>
+    \DeclareGraphicsExtensions{.pdf,.png,.jpg}%
+\fi
+\graphicspath{{Img/}}% search path for figures
+%-
+%- Set bibliography entry
+%-
+\ifartx@bibtex%
+    \setlength{\bibsep}{0.0pt plus 0.3ex}% set distance between entries
+\fi
+\ifartx@biber%
+    \setlength\bibitemsep{0.5\baselineskip}% set distance between entries
+\fi
+\renewcommand*{\bibfont}{\tiny}% set font size for bibliography
+%-
+%-> Configure list environment
+%-
+\ifartx@list% enable enhanced list
+    \definecolor{artxgreen}{rgb}{0,0.6,0}
+    \definecolor{artxgray}{rgb}{0.5,0.5,0.5}
+    \definecolor{artxmauve}{rgb}{0.58,0,0.82}
+    \lstset{%
+        numberbychapter=false,% numbered sequentially or by chapter
+        backgroundcolor=\color{white},% background color;
+        basicstyle=\scriptsize,% font size for code
+        breakatwhitespace=false,% sets if automatic breaks should only happen at whitespace
+        breaklines=true,% sets automatic line breaking
+        captionpos=b,% caption-position to bottom
+        commentstyle=\color{artxgreen},% comment style
+        %deletekeywords={...},% delete keywords from the given language
+        frame=single,% adds a frame around the code
+        keepspaces=true,% keeps spaces in text for keeping indentation of code
+        keywordstyle=\color{blue},% keyword style
+        %otherkeywords={*,...},% add more keywords to the set
+        numbers=left,% where to put the line-numbers; possible values are (none, left, right)
+        numbersep=5pt,% how far the line-numbers are from the code
+        numberstyle=\tiny\color{artxgray},% the style that is used for the line-numbers
+        rulecolor=\color{black},% if not set, the frame-color may be changed on line-breaks
+        showspaces=false,% show spaces everywhere adding particular underscores;
+        showstringspaces=false,% underline spaces within strings only
+        showtabs=false,% show tabs within strings adding particular underscores
+        stepnumber=2,% the step between two line-numbers. If it's 1, each line will be numbered
+        stringstyle=\color{artxmauve},% string literal style
+        tabsize=2,% sets default tabsize to 2 spaces
+        title=\lstname% show the filename of files
+    }
+\fi
+%-
+%-> show note pages
+%-
+%- A note is text that is intended as a reminder to yourself of what you should say or
+%- should keep in mind when presenting a slide.
+\ifartx@shownote% show note pages
+%- Configure the appearence of note page
+%\setbeamertemplate{note page}[default]% [default][compress][plain]
+%\setbeamerfont{note page}{size=\small}%
+%\setbeamercolor{note page}{bg=white}%
+%- Include notes in the output file. Normal slides are also included and the note pages are
+%- interleaved with them.
+%\setbeameroption{show notes}%
+%- When this option is given, a two screen version of your talk is created.
+%- \setbeameroption{show notes on second screen=[location]}, location: left, bottom, or top.
+\ifartx@showsecnote% show note pages on second screen
+    \setbeameroption{show notes on second screen=right}%
+\fi
+%- Include only the notes in the output file and suppresses all frames:
+\ifartx@showonlynote% show note pages only
+    \setbeameroption{show only notes}%
+\fi
+%- To fix the problem with the longer lines in the notes environment as they
+%- seems to spill out of the right end of the page without formatting correctly.
+\defbeamertemplate{note page}{infolines}%
+{%
+  {%
+    \scriptsize
+    \usebeamerfont{note title}\usebeamercolor[fg]{note title}%
+    \ifbeamercolorempty[bg]{note title}{}{%
+      \insertvrule{.25\paperheight}{note title.bg}%
+      \vskip-.25\paperheight%
+      \nointerlineskip%
+    }%
+    \vbox{
+      \hfill\insertslideintonotes{0.25}\hskip-\Gm@rmargin\hskip0pt%
+      \vskip-0.25\paperheight%
+      \nointerlineskip
+      \begin{pgfpicture}{0cm}{0cm}{0cm}{0cm}
+        \begin{pgflowlevelscope}{\pgftransformrotate{90}}
+          {\pgftransformshift{\pgfpoint{-2cm}{0.2cm}}%
+          \pgftext[base,left]{\usebeamerfont{note date}\usebeamercolor[fg]{note date}\the\year-\ifnum\month<10\relax0\fi\the\month-\ifnum\day<10\relax0\fi\the\day}}
+        \end{pgflowlevelscope}
+      \end{pgfpicture}}
+    \nointerlineskip
+    \vbox to .25\paperheight{\vskip0.5em
+      \hbox{\insertshorttitle[width=8cm]}%
+      \setbox\beamer@tempbox=\hbox{\insertsection}%
+      \hbox{\ifdim\wd\beamer@tempbox>1pt{\hskip4pt\raise3pt\hbox{\vrule
+            width0.4pt height7pt\vrule width 9pt
+            height0.4pt}}\hskip1pt\hbox{\begin{minipage}[t]{7.5cm}\def\breakhere{}\insertsection\end{minipage}}\fi%
+      }%
+      \setbox\beamer@tempbox=\hbox{\insertsubsection}%
+      \hbox{\ifdim\wd\beamer@tempbox>1pt{\hskip17.4pt\raise3pt\hbox{\vrule
+            width0.4pt height7pt\vrule width 9pt
+            height0.4pt}}\hskip1pt\hbox{\begin{minipage}[t]{7.5cm}\def\breakhere{}\insertsubsection\end{minipage}}\fi%
+      }%
+      \setbox\beamer@tempbox=\hbox{\insertshortframetitle}%
+      \hbox{\ifdim\wd\beamer@tempbox>1pt{\hskip30.8pt\raise3pt\hbox{\vrule
+            width0.4pt height7pt\vrule width 9pt
+            height0.4pt}}\hskip1pt\hbox{\insertshortframetitle[width=7cm]}\fi%
+      }%
+      \vfil}%
+  }%
+  \ifbeamercolorempty[bg]{note page}{}{%
+    \nointerlineskip%
+    \insertvrule{.75\paperheight}{note page.bg}%
+    \vskip-.75\paperheight%
+  }%
+  \vskip.25em
+  \nointerlineskip
+  \begin{minipage}{\textwidth}% this is an addition
+  \scriptsize
+  \smallskip
+  \insertnote
+  \end{minipage}% this is an addition
+}
+\setbeamertemplate{note page}[infolines]%
+\fi
+%---------------------------------------------------------------------------%
+\endinput
+

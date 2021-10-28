@@ -1,0 +1,67 @@
+%---------------------------------------------------------------------------%
+\lecture{Research Presentation}{lec_present_method}
+%---------------------------------------------------------------------------%
+\section{\enorcn{Method}{研究方法}}
+%---------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{\enorcn{Smart diagrams + Position objects + Citation + Trim figures + Low/Highlight}{Sart diagrams + 放置对象 + 引用文献 + 剪切图片 + 低亮/高亮}}
+    \tikzart[t=o,x=0,y=-0.8,s=0.9]{% position objects
+        \smartdiagramset{%
+            planet size=2cm,
+            distance planet-text=0.2cm,
+            planet text width=2cm,
+            planet color=orange!60,
+            distance planet-satellite=3cm,
+            satellite text width=2cm,
+            satellite size=2cm,%
+        }%
+        \smartdiagram[connected constellation diagram]{%
+            \enorcn{Inhomogeneities\\\&\\Interactions}{非均质相\\及\\耦合作用},\lolt{\enorcn{Microscale}{微观}},\hilt[2]{\enorcn{Mesoscale}{介观}},\lolt{\enorcn{Macroscale}{宏观}}%
+        }
+    }
+    \tikzart[t=p,x=-7.5,y=1.1,w=4]"\tiny\parencite[Nat. Phys.]{reed2008transient}"{jet_micro}[trim=10mm 0mm 15mm 0mm,clip]
+    \tikzart[t=p,x=-7.0,y=-4,w=4]"\tiny\parencite[JPP]{zhang2009reaction}"{jet_meso}[trim=50mm 0mm 50mm 0mm,clip]
+    \tikzart[t=p,x=7.0,y=-1,w=4]"\tiny\parencite[IDS]{zhang2010hybrid}"{jet_macro}[trim=10mm 0mm 10mm 0mm,clip]
+\end{frame}
+%---------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{\enorcn{Math + Position text + Full citation + Notes}{数学 + 放置文本 + 全引用 + 注释}}
+
+    $\psi_I = f(\{\psi_N\}, \psi_O)$
+
+    \smallskip
+
+    \begin{enumerate}
+        \scriptsize
+        \item \enorcn{Prediction step}{预估步}: $\psi_I^* = \left[\sum w(d_N) \psi_N\right] / \left[\sum w(d_N)\right]$
+        \item \enorcn{Boundary condition enforcement step}{边界条件实施步}: $\psi_O = C \psi_I + \Des{RRHS}$
+        \item \enorcn{Correction step}{校正步}: $\psi_I = \left[\psi_I^* + \frac{w(d_O)}{\sum w(d_N)}\psi_O\right] / \left[1+\frac{w(d_O)}{\sum w(d_N)}\right]$
+    \end{enumerate}
+
+    \smallskip
+
+    \centering\tiny
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{lccc}
+        \toprule
+        \enorcn{Type}{边界类型} & \enorcn{Example form}{典例} & $C$ & $\Des{RRHS}$\\
+        \midrule
+        Dirichlet & $\psi_O = g$ & $0$ & $g$ \\[8pt]
+        Neumann & $\left. \frac{\partial \psi}{\partial n} \right|_O = \frac{\partial \psi_O}{\partial n}$ & $1$ & $- ||\Vector{x}_I - \Vector{x}_O||\frac{\partial \psi_O}{\partial n}$ \\[8pt]
+        Robin & $\alpha \psi_O + \beta \left. \frac{\partial \psi}{\partial n} \right|_O = g$ & $\frac{\beta}{\beta - ||\Vector{x}_I - \Vector{x}_O|| \alpha}$ & $\frac{- ||\Vector{x}_I - \Vector{x}_O|| g}{\beta - ||\Vector{x}_I - \Vector{x}_O|| \alpha}$ \\[8pt]
+        Cauchy & $\begin{aligned} \left. (\Vector{V} \cdot \unitVector{n}) \right|_{\Vector{x}=\Vector{x}_O} &= \Vector{V}_{S} \cdot \unitVector{n} \\ \left. \frac{\partial (\Vector{V} \cdot \hat{\Vector{t}})}{\partial n} \right|_{\Vector{x}=\Vector{x}_O} &= 0 \\ \left. \frac{\partial (\Vector{V} \cdot \tilde{\Vector{t}})}{\partial n} \right|_{\Vector{x}=\Vector{x}_O} &= 0 \end{aligned}$ & $\begin{bmatrix} n_x & n_y & n_z \\ \hat{t}_x & \hat{t}_y & \hat{t}_z \\ \tilde{t}_x & \tilde{t}_y & \tilde{t}_z \end{bmatrix}^{\Des{T}} \begin{bmatrix} 0 & 0 & 0 \\ \hat{t}_x & \hat{t}_y & \hat{t}_z \\ \tilde{t}_x & \tilde{t}_y & \tilde{t}_z \end{bmatrix}$ & $\begin{bmatrix} n_x & n_y & n_z \\ \hat{t}_x & \hat{t}_y & \hat{t}_z \\ \tilde{t}_x & \tilde{t}_y & \tilde{t}_z \end{bmatrix}^{\Des{T}} \begin{bmatrix} n_x & n_y & n_z \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix} \cdot \Vector{V}_S$\\
+            \bottomrule
+    \end{tabular}
+
+    \tikzart[t=t,x=6.5,y=2.5,w=6][draw=none,font=\tiny]{\fullcite{mo2018immersed}}% position text in the form of full citation
+
+    \note{% notes
+        \begin{itemize}
+            \item Devises a second-order three-step flow reconstruction scheme.
+            \item Enforces the Dirichlet, Neumann, Robin, and Cauchy boundary conditions in a straightforward and consistent manner.
+            \item Enables efficient, accurate, and robust boundary treatment.
+        \end{itemize}
+    }
+\end{frame}
+%---------------------------------------------------------------------------%

@@ -1,0 +1,43 @@
+%---------------------------------------------------------------------------%
+\lecture{Research Presentation}{lec_present_intro}
+%---------------------------------------------------------------------------%
+\section{\enorcn{Introduction}{引言}}%
+%---------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{\enorcn{Compilation: requires \LaTeX{} environment}{编译: 需要 \LaTeX{} 编译环境}}
+    \begin{enumerate}
+        \item \enorcn{Just compile like an ordinary Beamer/\LaTeX{}}{正常编译即可}: \verb|pdflatex+biber+pdflatex+pdflatex|
+        \item \enorcn{Or use compilation script}{或者使用编译脚本}:
+            \begin{itemize}
+                \item Windows: \enorcn{double click}{双击Dos脚本} \path{artratex.bat}
+                \item Linux or MacOS: \enorcn{run in terminal}{在terminal中运行}
+                    \begin{itemize}
+                        \item \verb|./artratex.sh pb|: \enorcn{full compilaiton with reference cited in biblatex format}{获得全编译后的PDF文档}
+                        \item \verb|./artratex.sh p|: \enorcn{run pdflatex only, no biber for reference}{快速编译，不会生成文献引用}
+                    \end{itemize}
+            \end{itemize}
+        \item \enorcn{Switch to Chinese: just add the "CJK" option in "artrabeamer.tex"}{编译生成中文版本：只需在"artrabeamer.tex"中加上"CJK"选项}: 
+
+            \path{\usepackage[CJK,biber,authoryear,tikz,table,xlink]{Style/artrabeamer}}
+        \item \enorcn{Many other functionalities: check the available options below the line \path{\usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}} in "artrabeamer.tex"}{更多功能：查看"artrabeamer.tex"文件中\path{\usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}}下的诸多选项}
+    \end{enumerate}
+\end{frame}
+%---------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{\enorcn{Useful commands added to generic \LaTeX}{新增的有用命令}}
+    \begin{itemize}
+        \item \path{\enorcn{English}{Chinese}}: automatically switch between English and Chinese versions
+        \item \path{\tikzart[t=m]{}}: draw coordinate system to help you position contents
+        \item \path{\tikzart[t=p,x=-7,y=3,w=4]"comments"{figname}}: position a picture named "figname" at location "(x,y)" with width "w=4" and comments below the picture.
+        \item \path{\tikzart[t=o,x=0,y=-0.8,s=0.8]{objects-such-as-tikz-diagrams}}: position objects at location "(x,y)" with scaling "s=0.8"
+        \item \path{\tikzart[t=v,x=9.5,y=-6.5,w=0.5]{Video/vortex_preserve_geo.mp4}[\includegraphics{cover_image}]}: position a video at location "(x,y)" with a cover image of width "w=0.5"
+        \item \path{\lolt{lowlight}}, \path{\hilt{highlight}}: make the item show in different color when in different state
+    \end{itemize}
+\end{frame}
+%---------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{\enorcn{Draw coordinate systems + Position a picture}{显示坐标系 + 在给定位置放置图片}}
+    \tikzart[t=m]{}% draw coordinate system
+    \tikzart[t=p,x=5,y=2.5,w=4]{jet_macro}% position picture
+\end{frame}
+%---------------------------------------------------------------------------%

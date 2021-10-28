@@ -1,0 +1,53 @@
+%---------------------------------------------------------------------------%
+%->> Frontmatter
+%---------------------------------------------------------------------------%
+%---------------------------------------------------------------------------%
+%->> Create titlepage
+%---------------------------------------------------------------------------%
+%- create the title page, \frame[plain]{\titlepage} for a titlepage filling the whole frame.
+{% these braces make the change local to the single frame.
+    \setbeamertemplate{headline}{%
+        \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.5ex,right]{section in head/foot}%
+        \end{beamercolorbox}%
+    }
+    \setbeamertemplate{footline}{%
+        \leavevmode%
+        \hbox{%
+            \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+            \end{beamercolorbox}%
+            \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \end{beamercolorbox}%
+            \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+            \end{beamercolorbox}}%
+        \vskip0pt%
+    }
+    \begin{frame}[plain]
+        \titlepage%
+        %\tikzart[t=p,x=0,y=-4,w=4]{logo_uw}
+        \addtocounter{framenumber}{-1}% modify the counter to exclude a frame from total count
+    \end{frame}%
+}
+%---------------------------------------------------------------------------%
+%->> Outline page
+%---------------------------------------------------------------------------%
+%\section[Outline]{}%
+%\begin{frame}[plain]%
+%    \frametitle{Outline}%
+%    \tableofcontents%[part=partid]% may add the option [pausesections]
+%    \addtocounter{framenumber}{-1}% modify the counter to exclude a frame from total count
+%\end{frame}%
+\AtBeginPart% [<Lecture|Part|Section>]% insert content at the beginning of each element
+{%
+    \frame[plain]{\partpage}% [<partpage|sectionpage>][<\insertlecture|\insertpart|\insertsection>]
+    %\begin{frame}[plain]%
+    %    \frametitle{Outline}%
+    %    {%
+    %        \tableofcontents[sectionstyle=show/show,subsectionstyle=show/show/show]%
+    %    }%
+    %\end{frame}%
+}
+%---------------------------------------------------------------------------%
+%->> Content centering
+%---------------------------------------------------------------------------%
+%\centering% automatic horizontal centering of frame content
+%---------------------------------------------------------------------------%
