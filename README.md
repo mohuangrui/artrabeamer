@@ -1,9 +1,11 @@
 # artrabeamer
 ## A Beamer template for easily positioning and manipulating content
+
 <h1 align="center">
 <img width="100%" src="https://github.com/mohuangrui/mohuangrui/blob/main/gallery/artrabeamer_english.gif" alt="Beamer English">
 <img width="100%" src="https://github.com/mohuangrui/mohuangrui/blob/main/gallery/artrabeamer_chinese.gif" alt="Beamer Chinese">
 </h1>
+
 ## Compilation: requires LaTeX environment
 * Just compile like an ordinary Beamer/LaTeX: `pdflatex+biber+pdflatex+pdflatex`
 * Switch to Chinese: just add the "CJK" option in "artrabeamer.tex"
