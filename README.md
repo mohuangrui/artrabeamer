@@ -14,9 +14,10 @@
 ```Tex
 \usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}
 ```
+
 ## Useful commands added to generic LaTeX
 ```Tex
-\enorcn{English}{中文}: automatically switch between English and Chinese versions
+\enorcn{English}{Chinese}: automatically switch between English and Chinese versions
 \tikzart[t=m]{}}: draw coordinate system to help you position contents
 \tikzart[t=p,x=-7,y=3,w=4]"comments"{figname}}: position a picture named "figname" at location "(x,y)" with width "w=4" and comments below the picture.
 \tikzart[t=o,x=0,y=-0.8,s=0.8]{objects-such-as-tikz-diagrams}}: position objects at location "(x,y)" with scaling "s=0.8"
@@ -33,6 +34,12 @@
 ```Tex
 \usepackage[CJK,biber,authoryear,tikz,table,xlink]{Style/artrabeamer}}
 ```
+* 从中文版本切换为英文版本：只需在"artrabeamer.tex"中移除"CJK"选项: 
+```Tex
+\usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}}
+```
+同时删除旧的`Tmp`文件夹中的编译缓存文件。
+
 * 更多功能：查看"artrabeamer.tex"文件中的位于如下行下面的诸多选项
 ```Tex
 \usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}
