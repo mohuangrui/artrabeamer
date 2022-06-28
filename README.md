@@ -12,7 +12,7 @@
 ```Tex
 \usepackage[CJK,biber,authoryear,tikz,table,xlink]{Style/artrabeamer}
 ```
-* Many other functionalities: check the available options in "artrabeamer.tex" below the line
+* Many other functionalities: check the available options below the following line in "artrabeamer.tex"
 ```Tex
 \usepackage[biber,authoryear,tikz,table,xlink]{Style/artrabeamer}
 ```
@@ -49,7 +49,7 @@
 ## 新增的有用命令
 ```Tex
 \enorcn{English}{中文}: 自动切换中英文文本
-\tikzart[t=m]{}}: 绘制坐标系以帮助定位内容
+\tikzart[t=m]{}: 绘制坐标系以帮助定位内容
 \tikzart[t=p,x=-7,y=3,w=4]"comments"{figname}: 将一张名为“figname”的图片放置在位置（x，y）处，图片宽度为“w=4”，并在图片下方添加注释。
 \tikzart[t=o,x=0,y=-0.8,s=0.8]{objects-such-as-tikz-diagrams}: 将对象定位在位置（x，y）处，缩放比例为“s=0.8”
 \tikzart[t=v,x=9.5,y=-6.5,w=0.5]{Video/vortex_preserve_geo.mp4}[\includegraphics{cover_image}]: 将视频放置在位置（x，y）处，封面图像宽度为“w=0.5”
